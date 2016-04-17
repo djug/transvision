@@ -4,14 +4,9 @@ namespace Transvision;
 // This file initializes l10n support: locale detection, RTL/LTR variables
 
 if (isset($_GET['repo'])) {
-    $repo = Project::isValidRepository($_GET['repo'])
-            ? $_GET['repo']
-            : 'aurora';
-} else {
-    if (! isset($repo)) {
-        $repo = 'aurora';
-    }
+    $search->setRepository(Utils::secureText($_GET['repo']));
 }
+$repo = $search->getRepository();
 
 $all_locales = Project::getRepositoryLocales($repo);
 
@@ -70,6 +65,3 @@ if (isset($_GET['sourcelocale'])) {
 // Get RTL attribute for source and target locales
 $locale_dir = $l10n->getDirection($locale);
 $source_locale_dir = $l10n->getDirection($source_locale);
-
-// Initialize list of JavaScript files to include
-$javascript_include = [];

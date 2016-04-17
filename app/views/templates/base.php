@@ -3,22 +3,7 @@ namespace Transvision;
 
 $source_locale  = isset($source_locale) ? $source_locale : 'en-US';
 $locale         = isset($locale) ? $locale : 'fr';
-$initial_search = isset($initial_search) ? $initial_search : 'Bookmarks';
-$base_js        = ['/js/base.js'];
-$base_css       = ['transvision.css'];
 $cache_bust     = '?v=' . VERSION;
-
-if (isset($javascript_include)) {
-    $javascript_include = array_merge($base_js, $javascript_include);
-} else {
-    $javascript_include = $base_js;
-}
-
-if (isset($css_include)) {
-    $css_include = array_merge($base_css, $css_include);
-} else {
-    $css_include = $base_css;
-}
 
 /*
     This is a closure to build a list item containing the
@@ -42,7 +27,7 @@ $li_link = function ($page, $title, $text) use ($url, $urls) {
 $li_t2t = '<li><a ' . (isset($_GET['t2t']) ? 'class="selected_view" ' : '')
        . 'href="/?sourcelocale=' . $source_locale . '&locale=' . $locale
        . '&repo=' . $search->getRepository() . '&t2t=t2t&recherche='
-       . Utils::secureText($initial_search)
+       . Utils::secureText($search->getSearchTerms())
        . '" title="Search in the Glossary">Glossary</a></li>';
 
 $links = <<<EOT
@@ -62,7 +47,7 @@ $links = <<<EOT
     {$li_link('checkvariables', 'Check what variable differences there are from English', 'Check Variables')}
     {$li_link('consistency', 'Translation Consistency', 'Translation Consistency')}
     {$li_link('unchangedstrings', 'Display all strings identical to English', 'Unchanged Strings')}
-    {$li_link('unlocalized', 'Display common words remaining in English', 'Unlocalized Words')}
+    {$li_link('unlocalized_all', 'Display common words remaining in English', 'Unlocalized Words')}
   </ul>
   <ul>
     {$li_link('channelcomp', 'Compare strings betwen channels', 'Channel Comparison')}
@@ -100,7 +85,7 @@ if (file_exists(CACHE_PATH . 'lastdataupdate.txt')) {
 } ?><?= $title_productname ?></title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php foreach ($css_include as $css_file):?>
+<?php foreach ($css_files as $css_file):?>
     <link rel="stylesheet" href="/style/<?= $css_file . $cache_bust ?>" type="text/css" media="all" />
 <?php endforeach?>
     <link rel="shortcut icon" type="image/png" href="/img/logo/Icon_16x16.png" />
@@ -131,7 +116,7 @@ if (file_exists(CACHE_PATH . 'lastdataupdate.txt')) {
 
   <?php if ($show_title == true): ?>
   <h2 id="page_title"><?= $page_title ?></h2>
-  <h3 id="page_descrition"><?= $page_descr ?></h3>
+  <p class="page_description"><?= $page_descr ?></p>
   <?php endif; ?>
 
   <div id="pagecontent">
@@ -150,7 +135,7 @@ if (file_exists(CACHE_PATH . 'lastdataupdate.txt')) {
 
   <script src="/assets/jquery/jquery.min.js?v=<?= VERSION ?>"></script>
   <script src="/assets/clipboard.js/clipboard.js-built.js?v=<?= VERSION ?>"></script>
-<?php foreach ($javascript_include as $js_file):?>
+<?php foreach ($js_files as $js_file):?>
   <script src="<?= $js_file . $cache_bust ?>"></script>
 <?php endforeach?>
 
